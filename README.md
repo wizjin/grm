@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/wizjin/grm.svg)](https://travis-ci.org/wizjin/grm)
 [![codecov](https://codecov.io/gh/wizjin/grm/branch/master/graph/badge.svg)](https://codecov.io/gh/wizjin/grm)
+[![Go Report Card](https://goreportcard.com/badge/github.com/wizjin/grm)](https://goreportcard.com/report/github.com/wizjin/grm)
 [![GoDoc](https://godoc.org/github.com/wizjin/grm?status.svg)](https://godoc.org/github.com/wizjin/grm)
 
 

@@ -3,6 +3,12 @@ language: go
 go:
   - master
 
+services:
+  - mongodb
+
+before_script:
+  - sleep 15
+
 before_install:
   - go get -t -v ./...
 

@@ -11,7 +11,7 @@ A simple gin restful api middleware with mongodb.
 
 - [Installation](#installation)
 - [Prerequisite](#prerequisite)
-- [LICENSE](#license)
+- [License](#license)
 
 # Installation
 
@@ -29,7 +29,8 @@ import "github.com/wizjin/grm"
 # Prerequisite
 
 - [Gin](https://github.com/gin-gonic/gin)
+- [Mgo](https://github.com/globalsign/mgo)
 
-# LICENSE
+# License
 
 This project is licensed under the MIT license, see [LICENSE](LICENSE).

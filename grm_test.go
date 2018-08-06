@@ -10,8 +10,11 @@ import (
 )
 
 func TestMiddleware(t *testing.T) {
-	r := gin.Default()
-	r.GET("/test", Middleware())
+	gin.SetMode(gin.ReleaseMode)
+	g := New("mongodb://127.0.0.1/test")
+	defer g.Close()
+	r := gin.New()
+	r.GET("/test", g.Middleware())
 	w := httptest.NewRecorder()
 	req, _ := http.NewRequest("GET", "/test", nil)
 	r.ServeHTTP(w, req)

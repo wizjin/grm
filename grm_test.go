@@ -37,7 +37,9 @@ func TestReconnectDB(t *testing.T) {
 	for i := -1; i < int(dbReconnectInterval.Seconds()); i++ {
 		s := g.s.Load().(*mgo.Session)
 		if s != nil {
-			s.SetSocketTimeout(time.Nanosecond) // Force ping failed
+			ss := s.Copy()
+			ss.SetSocketTimeout(time.Nanosecond) // Force ping failed
+			g.s.Store(ss)
 		}
 		time.Sleep(time.Second)
 	}

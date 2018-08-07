@@ -3,6 +3,7 @@ package grm
 import (
 	"fmt"
 	"io"
+	"reflect"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -18,6 +19,14 @@ type logger struct {
 func mlogger(name string) *logger {
 	return &logger{
 		name: name,
+		w:    gin.DefaultWriter,
+	}
+}
+
+func clogger(ctx *gin.Context, name string) *logger {
+	uid := fmt.Sprintf("%08X", reflect.ValueOf(ctx).Pointer())
+	return &logger{
+		name: fmt.Sprintf("%s.%s", name, uid[4:]),
 		w:    gin.DefaultWriter,
 	}
 }

@@ -3,11 +3,19 @@ language: go
 go:
   - master
 
+git:
+  depth: 1
+
+branches:
+  only:
+  - master
+  - develop
+
 services:
   - mongodb
 
 before_script:
-  - sleep 15
+  - sleep 5
   - mongo --eval 'db.hostInfo()'
 
 script:

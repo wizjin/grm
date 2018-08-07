@@ -2,6 +2,7 @@ package grm
 
 import (
 	"net/http"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -20,6 +21,7 @@ type GRM struct {
 
 var (
 	nullSession         *mgo.Session
+	dbConnectTimeout    = 5 * time.Second
 	dbReconnectInterval = 5 * time.Second
 )
 
@@ -29,7 +31,7 @@ func New(dburl string) *GRM {
 	g.run = 1
 	g.done = make(chan bool)
 	g.s.Store(nullSession)
-	go g.guarddb(dburl)
+	go g.watchDB(dburl)
 	return g
 }
 
@@ -48,14 +50,41 @@ func (g *GRM) Close() {
 	}
 }
 
-// Middleware return gin handler
-func (g *GRM) Middleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		c.AbortWithStatus(http.StatusOK)
+// C get collection from context
+func C(ctx *gin.Context, name string) *mgo.Collection {
+	if c, ok := ctx.Get("grm.db." + name); ok {
+		return c.(*mgo.Collection)
+	}
+	return nil
+}
+
+// C set collection by names
+func (g *GRM) C(names ...string) gin.HandlerFunc {
+	m := map[string]string{}
+	for _, n := range names {
+		ps := strings.Split(n, ":")
+		if len(ps) > 1 {
+			m[ps[1]] = ps[0]
+		} else {
+			m[ps[0]] = ps[0]
+		}
+	}
+	return func(ctx *gin.Context) {
+		s := g.s.Load().(*mgo.Session)
+		if s == nil {
+			clogger(ctx, "GRM").Debug("link collections failed: %s", strings.Join(names, ","))
+			ctx.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+		db := s.DB("")
+		for k, v := range m {
+			ctx.Set("grm.db."+k, db.C(v))
+		}
+		ctx.Next()
 	}
 }
 
-func (g *GRM) guarddb(dburl string) {
+func (g *GRM) watchDB(dburl string) {
 	l := mlogger("GRM")
 	defer func() {
 		if r := recover(); r != nil {
@@ -67,7 +96,7 @@ func (g *GRM) guarddb(dburl string) {
 	if err != nil {
 		panic(err.Error())
 	}
-	info.Timeout = time.Second * 2
+	info.Timeout = dbConnectTimeout
 	wait := time.Now()
 	for atomic.LoadInt32(&g.run) > 0 {
 		if time.Until(wait) > 0 {

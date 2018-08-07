@@ -8,6 +8,7 @@ services:
 
 before_script:
   - sleep 15
+  - mongo --eval 'db.hostInfo()'
 
 script:
   - go test -race -coverprofile=coverage.txt -covermode=atomic

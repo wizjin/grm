@@ -67,7 +67,7 @@ func (g *GRM) guarddb(dburl string) {
 	if err != nil {
 		panic(err.Error())
 	}
-	info.Timeout = time.Second
+	info.Timeout = time.Second * 2
 	wait := time.Now()
 	for atomic.LoadInt32(&g.run) > 0 {
 		if time.Until(wait) > 0 {

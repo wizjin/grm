@@ -1,7 +1,6 @@
 package grm
 
 import (
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -15,7 +14,7 @@ import (
 
 func TestMain(m *testing.M) {
 	gin.SetMode(gin.ReleaseMode)
-	gin.DefaultWriter = ioutil.Discard
+	// gin.DefaultWriter = ioutil.Discard
 	dbReconnectInterval = time.Second
 	os.Exit(m.Run())
 }

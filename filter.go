@@ -25,10 +25,10 @@ func GetFilter(ctx *gin.Context) bson.M {
 }
 
 func paseFilter(filter bson.M, in string) bson.M {
-	for _, f := range strToParams(in) {
+	for _, f := range strings.Split(in, "|") {
 		parts := strings.Split(f, " ")
 		if len(parts) > 2 {
-			key := parts[0]
+			key := toKey(parts[0])
 			if parts[1] == "eq" {
 				filter[key] = toValue(parts[2])
 				continue
@@ -58,6 +58,13 @@ func paseFilter(filter bson.M, in string) bson.M {
 		}
 	}
 	return filter
+}
+
+func toKey(key string) string {
+	if key == "id" {
+		return "_id"
+	}
+	return key
 }
 
 func toValue(val string) interface{} {

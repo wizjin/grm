@@ -20,10 +20,11 @@ func TestSetAndGet(t *testing.T) {
 
 func TestPaseFilter(t *testing.T) {
 	assert.Equal(t, bson.M{
+		"_id":   bson.M{"$ne": "xyz"},
 		"name":  "abc",
 		"test":  false,
 		"block": bson.M{"$ne": true},
 		"age":   bson.M{"$gte": 20, "$lt": 50},
 		"score": bson.M{"$gt": 10.0, "$lte": 30.0},
-	}, paseFilter(bson.M{}, "name eq 'abc'|block ne true|test eq false|age ge 20|age lt 50|score gt 10.0|score le 30.0"))
+	}, paseFilter(bson.M{}, "id ne 'xyz'|name eq 'abc'|block ne true|test eq false|age ge 20|age lt 50|score gt 10.0|score le 30.0"))
 }

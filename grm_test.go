@@ -1,5 +1,3 @@
-//+build old
-
 package grm
 
 import (
